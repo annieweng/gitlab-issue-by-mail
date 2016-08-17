@@ -59,10 +59,10 @@ class FetchMailCommand extends Command
 
             $issueTitle = $message->getSubject();
             $issueLabel = str_replace("Re: ", "",$issueTitle);
-            $currnetIssue = $project->getIssueByLabel($issueLabel);
-            $issueContent = 'Issue sent from: '.$message->getAddresses('from', true)."\r\n".$message->getMessageBody();
+            $currentIssue = $project->getIssueByLabel($issueLabel);
+            $issueContent = 'Issue sent from: '.$message->getAddresses('from', true)."\r\n\n".$message->getMessageBody();
 
-            if(empty($currentIssue) || isSet($currentIssue['id'])==false){
+            if(count($currentIssue)==0){
               $project->createIssue($issueTitle, [
                   'description' => $issueContent,
                   'labels' => $issueLabel,
@@ -73,7 +73,7 @@ class FetchMailCommand extends Command
             }
             else {
 
-              $currentIssue.addComment($issueContent);
+              $currentIssue->addComment($issueContent);
               if ($output->getVerbosity() <= OutputInterface::VERBOSITY_VERBOSE) {
                   $output->writeln(sprintf('<info>Created a new comment under existing issue: <comment>%s</comment></info>', $issueTitle));
               }
