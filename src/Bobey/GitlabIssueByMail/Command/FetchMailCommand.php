@@ -58,15 +58,29 @@ class FetchMailCommand extends Command
         foreach ($messages as $message) {
 
             $issueTitle = $message->getSubject();
+            $issueLabel = str_replace("Re: ", "",$issueTitle);
+            $currnetIssue = $project->getIssueByLabel($issueLabel);
             $issueContent = 'Issue sent from: '.$message->getAddresses('from', true)."\r\n".$message->getMessageBody();
 
-            $project->createIssue($issueTitle, [
-                'description' => $issueContent,
-            ]);
-
-            if ($output->getVerbosity() <= OutputInterface::VERBOSITY_VERBOSE) {
-                $output->writeln(sprintf('<info>Created a new issue: <comment>%s</comment></info>', $issueTitle));
+            if(empty($currentIssue) || isSet($currentIssue['id'])==false){
+              $project->createIssue($issueTitle, [
+                  'description' => $issueContent,
+                  'labels' => $issueLabel,
+              ]);
+              if ($output->getVerbosity() <= OutputInterface::VERBOSITY_VERBOSE) {
+                  $output->writeln(sprintf('<info>Created a new issue: <comment>%s</comment></info>', $issueTitle));
+              }
             }
+            else {
+
+              $currentIssue.addComment($issueContent);
+              if ($output->getVerbosity() <= OutputInterface::VERBOSITY_VERBOSE) {
+                  $output->writeln(sprintf('<info>Created a new comment under existing issue: <comment>%s</comment></info>', $issueTitle));
+              }
+            }
+
+
+
 
             $message->delete();
         }
