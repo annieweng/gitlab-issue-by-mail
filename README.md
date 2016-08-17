@@ -2,6 +2,10 @@
 
 Add new issue to your Gitlab by sending an email to bug@yourdomain.com
 
+#added feature:
+ include mail.sender as sender of issue .
+ mail with same subject will be create as a comment of issue instead of new issue.
+
 ## Why?
 
 Gitlab is a fantastic tool to work with and is getting more awesome everyday.
@@ -38,6 +42,7 @@ description and delete it from your mail server. That's all. Nothing more!
         projectId:  1
         token:      123456789
     ```
+3a) sh installComposer.sh
 
 3. `bin/console gitlab:fetch-mail -v`
 

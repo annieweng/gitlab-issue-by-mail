@@ -58,7 +58,7 @@ class FetchMailCommand extends Command
         foreach ($messages as $message) {
 
             $issueTitle = $message->getSubject();
-            $issueContent = $message->getMessageBody();
+            $issueContent = 'Issue sent from: '.$message->getAddresses('from', true)."\r\n".$message->getMessageBody();
 
             $project->createIssue($issueTitle, [
                 'description' => $issueContent,
